@@ -1,0 +1,15 @@
+micronaut:
+  router:
+    static-resources:
+      mine:
+        api_token: abed
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        enabled: true
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+
+okta:
+  api-token: ${OKTA_API_TOKEN}

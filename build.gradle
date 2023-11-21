@@ -1,0 +1,74 @@
+plugins {
+    id("groovy") 
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.0.4"
+    id("io.micronaut.aot") version "4.0.4"
+}
+
+version = "0.1"
+group = "co.betterdata"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi:1.3.3"
+    implementation("io.micronaut:micronaut-aop")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.groovy:micronaut-runtime-groovy")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+    implementation("io.micronaut.session:micronaut-session")
+    implementation("io.swagger.core.v3:swagger-annotations")
+    implementation("io.micronaut.openapi:micronaut-openapi")
+    implementation 'org.apache.groovy:groovy-json:4.0.14'
+    implementation 'com.okta.jwt:okta-jwt-verifier:0.5.7'
+    implementation 'com.okta.jwt:okta-jwt-verifier-impl:0.5.7'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.1.10'
+    compileOnly("io.micronaut:micronaut-http-validation")
+//    compileOnly("io.micronaut.openapi:micronaut-openapi")
+    compileOnly("io.micronaut.serde:micronaut-serde-processor")
+    runtimeOnly("ch.qos.logback:logback-classic")
+}
+
+
+application {
+    mainClass.set("co.betterdata.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
+
+tasks {
+    dockerBuild {
+        images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
+    }
+
+    dockerBuildNative {
+        images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
+    }
+}
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("spock2")
+    processing {
+        incremental(true)
+        annotations("co.betterdata.*")
+    }
+    aot {
+    // Please review carefully the optimizations enabled below
+    // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+        optimizeServiceLoading = false
+        convertYamlToJava = false
+        precomputeOperations = true
+        cacheEnvironment = true
+        optimizeClassLoading = true
+        deduceEnvironment = true
+        optimizeNetty = true
+    }
+}
+
+
+
