@@ -25,7 +25,8 @@
 
 ## Terraform Deployment
 
-- AWS Fargate ( aws_deployment.md)
+- AWS Fargate ( aws_deployment.md )
+- Azure ACI ( azure_deployment.md )
 
 # Azure Container Instance Workflow
 
